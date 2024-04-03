@@ -10,7 +10,7 @@ from einops import rearrange
 
 # data
 from torch.utils.data import DataLoader
-from datasets import dataset_dict
+from datasets import dataset_dict    # pytorch lighting框架使用时的模板
 from datasets.ray_utils import axisangle_to_R, get_rays
 
 # models
