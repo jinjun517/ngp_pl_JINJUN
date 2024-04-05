@@ -2,36 +2,36 @@ import torch
 from torch import nn
 from opt import get_opts
 import os
-import glob
+import glob    #文件搜索
 import imageio
 import numpy as np
 import cv2
-from einops import rearrange
+from einops import rearrange    #张量操作 更加具象化的维度变换
 
 # data
 from torch.utils.data import DataLoader
-from datasets import dataset_dict    # pytorch lighting框架使用时的模板
-from datasets.ray_utils import axisangle_to_R, get_rays
+from datasets import dataset_dict    # pytorch lighting框架使用时的模板，自定义的数据操作库
+from datasets.ray_utils import axisangle_to_R, get_rays    #坐标变换函数和光线获取（像素点在世纪坐标中的向量和相机中心向量）
 
 # models
-from kornia.utils.grid import create_meshgrid3d
+from kornia.utils.grid import create_meshgrid3d    #图像处理库，可在GPU 上直接计算
 from models.networks import NGP
 from models.rendering import render, MAX_SAMPLES
 
 # optimizer, losses
-from apex.optimizers import FusedAdam
+from apex.optimizers import FusedAdam    # Pytorch扩展，实现混合精度和分布式训练
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from losses import NeRFLoss
 
-# metrics
+# metrics     # 为创建自定义度量提供标准化API
 from torchmetrics import (
     PeakSignalNoiseRatio, 
     StructuralSimilarityIndexMeasure
 )
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 
-# pytorch-lightning
-from pytorch_lightning.plugins import DDPPlugin
+# pytorch-lightning 主要从数据、模型、训练其三方面对网络进行了模块化和抽象
+from pytorch_lightning.plugins import DDPPlugin    #用于在一个或多个节点上进行多进程单设备训练的插件
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks import TQDMProgressBar, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
