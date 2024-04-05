@@ -33,16 +33,17 @@ from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 # pytorch-lightning 主要从数据、模型、训练其三方面对网络进行了模块化和抽象
 from pytorch_lightning.plugins import DDPPlugin    #用于在一个或多个节点上进行多进程单设备训练的插件
 from pytorch_lightning import LightningModule, Trainer
-from pytorch_lightning.callbacks import TQDMProgressBar, ModelCheckpoint
+from pytorch_lightning.callbacks import TQDMProgressBar, ModelCheckpoint    #回调可以利用许多创造性的方法来改进训练和性能，节省计算资源，并提供有关神经网络内部发生的事情的结论
+# pytorch_lightning 默认的进度条
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.utilities.distributed import all_gather_ddp_if_available
 
-from utils import slim_ckpt, load_ckpt
+from utils import slim_ckpt, load_ckpt    #Checkpoint是用于描述在每次训练后保存模型参数（权重）的惯例或术语
 
 import warnings; warnings.filterwarnings("ignore")
 
 
-def depth2img(depth):
+def depth2img(depth):    #深度归一化以及colormap深度图
     depth = (depth-depth.min())/(depth.max()-depth.min())
     depth_img = cv2.applyColorMap((depth*255).astype(np.uint8),
                                   cv2.COLORMAP_TURBO)
@@ -50,7 +51,7 @@ def depth2img(depth):
     return depth_img
 
 
-class NeRFSystem(LightningModule):
+class NeRFSystem(LightningModule):    #模型的实例化
     def __init__(self, hparams):
         super().__init__()
         self.save_hyperparameters(hparams)
