@@ -53,10 +53,10 @@ def depth2img(depth):    #深度归一化以及colormap深度图
 
 class NeRFSystem(LightningModule):    #模型的实例化
     def __init__(self, hparams):
-        super().__init__()
-        self.save_hyperparameters(hparams)
+        super().__init__()    #调用父类中的初始函数
+        self.save_hyperparameters(hparams)    
 
-        self.warmup_steps = 256
+        self.warmup_steps = 256    #在刚刚开始训练时以很小的学习率进行训练
         self.update_interval = 16
 
         self.loss = NeRFLoss(lambda_distortion=self.hparams.distortion_loss_w)
