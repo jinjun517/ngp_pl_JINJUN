@@ -56,14 +56,16 @@ class NeRFSystem(LightningModule):    #模型的实例化
         super().__init__()    #调用父类中的初始函数
         self.save_hyperparameters(hparams)    
 
-        self.warmup_steps = 256    #在刚刚开始训练时以很小的学习率进行训练
-        self.update_interval = 16
+        self.warmup_steps = 256    #在刚刚开始训练时以很小的学习率进行训练,有助于减轻过拟合
+        self.update_interval = 16    #
 
         self.loss = NeRFLoss(lambda_distortion=self.hparams.distortion_loss_w)
-        self.train_psnr = PeakSignalNoiseRatio(data_range=1)
-        self.val_psnr = PeakSignalNoiseRatio(data_range=1)
+        # return d{'rgb','opacity','distortion'}
+        
+        self.train_psnr = PeakSignalNoiseRatio(data_range=1)    #信噪比，图像质量评估。
+        self.val_psnr = PeakSignalNoiseRatio(data_range=1)    #结构相似性
         self.val_ssim = StructuralSimilarityIndexMeasure(data_range=1)
-        if self.hparams.eval_lpips:
+        if self.hparams.eval_lpips:    #学习感知图像快相似度。上述三者都是有真实参照的图像质量的客观评估指标
             self.val_lpips = LearnedPerceptualImagePatchSimilarity('vgg')
             for p in self.val_lpips.net.parameters():
                 p.requires_grad = False
