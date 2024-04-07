@@ -32,6 +32,7 @@ class DistortionLoss(torch.autograd.Function):
         (ws_inclusive_scan, wts_inclusive_scan,
         ws, deltas, ts, rays_a) = ctx.saved_tensors
         dL_dws = vren.distortion_loss_bw(dL_dloss, ws_inclusive_scan,
+               
                                          wts_inclusive_scan,
                                          ws, deltas, ts, rays_a)
         return dL_dws, None, None, None
@@ -57,4 +58,11 @@ class NeRFLoss(nn.Module):
                 DistortionLoss.apply(results['ws'], results['deltas'],
                                      results['ts'], results['rays_a'])
 
+
+
+#
+
+
+        
+        
         return d
